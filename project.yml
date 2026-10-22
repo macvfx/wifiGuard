@@ -1,0 +1,39 @@
+name: Wi-Fi Guard
+options:
+  bundleIdPrefix: com.wifiguard
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    ENABLE_HARDENED_RUNTIME: YES
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: YOURTEAMID
+targets:
+  Wi-Fi Guard:
+    type: application
+    platform: macOS
+    sources:
+      - path: Wi-Fi Guard
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wifiguard.app
+        PRODUCT_NAME: Wi-Fi Guard
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_LSUIElement: YES
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
+        INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026"
+        CODE_SIGN_ENTITLEMENTS: Wi-Fi Guard/WiFiGuard.entitlements
+        COMBINE_HIDPI_IMAGES: YES
+schemes:
+  Wi-Fi Guard:
+    build:
+      targets:
+        Wi-Fi Guard: all
+    run:
+      config: Debug
+    archive:
+      config: Release
