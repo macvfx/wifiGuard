@@ -36,9 +36,9 @@ struct MenuContent: View {
         Divider()
         Button(model.wifiOn ? "Turn Wi-Fi Off" : "Turn Wi-Fi On") { model.toggleWiFi() }
         Menu("Keep Wi-Fi On For") {
-            Button("30 minutes") { model.snooze(minutes: 30) }
-            Button("1 hour") { model.snooze(minutes: 60) }
-            Button("4 hours") { model.snooze(minutes: 240) }
+            ForEach(model.snoozeChoices, id: \.self) { minutes in
+                Button(GuardModel.label(minutes: minutes)) { model.snooze(minutes: minutes) }
+            }
             if model.snoozedUntil != nil {
                 Divider()
                 Button("End Now") { model.clearSnooze() }
@@ -54,10 +54,12 @@ struct MenuContent: View {
         Divider()
         Button("Help…") {
             openWindow(id: "help")
-            NSApp.activate(ignoringOtherApps: true)
+            WindowFront.bring(titleContaining: "Help")
         }
-        SettingsLink { Text("Settings…") }
-            .simultaneousGesture(TapGesture().onEnded { NSApp.activate(ignoringOtherApps: true) })
+        Button("Settings…") {
+            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+            WindowFront.bring(titleContaining: "Settings")
+        }
         Button("Quit Wi-Fi Guard") { NSApplication.shared.terminate(nil) }
     }
 
@@ -83,5 +85,19 @@ enum MenuBarIcon {
             .withSymbolConfiguration(config) ?? NSImage()
         image.isTemplate = false
         return image
+    }
+}
+
+/// Menu bar apps have no Dock presence, so a window they open can land behind other apps.
+enum WindowFront {
+    static func bring(titleContaining text: String) {
+        NSApp.activate(ignoringOtherApps: true)
+        for delay in [0.05, 0.3] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                NSApp.activate(ignoringOtherApps: true)
+                NSApp.windows.first { $0.title.contains(text) }?.makeKeyAndOrderFront(nil)
+                NSApp.windows.first { $0.title.contains(text) }?.orderFrontRegardless()
+            }
+        }
     }
 }

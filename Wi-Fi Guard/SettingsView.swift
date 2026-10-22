@@ -5,6 +5,7 @@ struct SettingsView: View {
     @AppStorage(DefaultsKey.mode) private var modeRaw = GuardMode.ask.rawValue
     @AppStorage(DefaultsKey.intervalMinutes) private var interval = 5
     @AppStorage(DefaultsKey.lockoutGuard) private var lockoutGuard = true
+    @AppStorage(DefaultsKey.snoozeOptions) private var snoozeOptions = "5, 15, 30"
 
     var body: some View {
         Form {
@@ -15,6 +16,9 @@ struct SettingsView: View {
                 .disabled(model.isManaged(DefaultsKey.mode))
                 Stepper("Check every \(interval) min", value: $interval, in: 1...60)
                     .disabled(model.isManaged(DefaultsKey.intervalMinutes))
+                TextField("Keep-on choices (minutes)", text: $snoozeOptions, prompt: Text("5, 15, 30"))
+                    .disabled(model.isManaged(DefaultsKey.snoozeOptions)
+                              || model.isManaged(DefaultsKey.allowSnooze))
                 Toggle("Never turn Wi-Fi off if it is the only connection", isOn: $lockoutGuard)
                     .disabled(model.isManaged(DefaultsKey.lockoutGuard))
                 Toggle("Open at login", isOn: Binding(
@@ -43,5 +47,6 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .frame(width: 460)
         .padding(.bottom)
+        .onAppear { WindowFront.bring(titleContaining: "Settings") }
     }
 }

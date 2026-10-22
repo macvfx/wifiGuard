@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 (build 3)
+- Keep-on durations are configurable (up to three, in minutes; default 5, 15, 30) in Settings
+  and via the `snoozeOptions` managed key. Menu and notification buttons follow them.
+- Settings and Help windows now come to the front. Cause: a menu bar app has no Dock icon, so
+  macOS left newly opened windows behind other apps; they are now ordered front explicitly.
+
 ## 0.2.0 (build 2)
 - MDM support: `mode`, `intervalMinutes`, `lockoutGuard`, `allowSnooze` can be forced by a
   configuration profile; forced settings are locked in the menu and Settings.

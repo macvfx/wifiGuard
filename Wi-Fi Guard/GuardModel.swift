@@ -21,9 +21,10 @@ enum DefaultsKey {
     static let intervalMinutes = "intervalMinutes"
     static let lockoutGuard = "lockoutGuard"
     static let allowSnooze = "allowSnooze"
+    static let snoozeOptions = "snoozeOptions"
 
     /// Keys an MDM configuration profile can force (domain com.wifiguard.app).
-    static let managed = [mode, intervalMinutes, lockoutGuard, allowSnooze]
+    static let managed = [mode, intervalMinutes, lockoutGuard, allowSnooze, snoozeOptions]
 
     static func isForced(_ key: String) -> Bool {
         UserDefaults.standard.objectIsForced(forKey: key)
@@ -50,6 +51,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     private let paths = OtherPathMonitor()
     private var nextCheck = Date()
     private var timer: Timer?
+    private var registeredChoices: [Int] = []
 
     private static let category = "WIFI_ASK"
     private static let requestID = "wifi-on"
@@ -61,6 +63,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
             DefaultsKey.intervalMinutes: 5,
             DefaultsKey.lockoutGuard: true,
             DefaultsKey.allowSnooze: true,
+            DefaultsKey.snoozeOptions: "5, 15, 30",
         ])
         refreshManaged()
         wifiOn = wifi.isOn
@@ -78,15 +81,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
 
         let center = UNUserNotificationCenter.current()
         center.delegate = self
-        let actions = [
-            UNNotificationAction(identifier: "keep30", title: "Keep on 30 min"),
-            UNNotificationAction(identifier: "keep60", title: "Keep on 1 hour"),
-            UNNotificationAction(identifier: "off", title: "Turn off now", options: [.destructive]),
-        ]
-        center.setNotificationCategories([
-            UNNotificationCategory(identifier: Self.category, actions: actions,
-                                   intentIdentifiers: [])
-        ])
+        registerCategory()
         center.requestAuthorization(options: [.alert]) { _, _ in }
 
         timer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { [weak self] _ in
@@ -102,7 +97,32 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
 
     var snoozeAllowed: Bool { UserDefaults.standard.bool(forKey: DefaultsKey.allowSnooze) }
 
+    /// Keep-on durations in minutes: up to three positive numbers from the `snoozeOptions` string.
+    var snoozeChoices: [Int] {
+        let raw = UserDefaults.standard.string(forKey: DefaultsKey.snoozeOptions) ?? ""
+        let values = raw.split { !$0.isNumber }.compactMap { Int($0) }.filter { (1...1440).contains($0) }
+        return Array((values.isEmpty ? [5, 15, 30] : values).prefix(3))
+    }
+
+    static func label(minutes: Int) -> String {
+        if minutes % 60 == 0 { return minutes == 60 ? "1 hour" : "\(minutes / 60) hours" }
+        return "\(minutes) min"
+    }
+
+    private func registerCategory() {
+        registeredChoices = snoozeChoices
+        var actions = registeredChoices.map {
+            UNNotificationAction(identifier: "keep:\($0)", title: "Keep on \(Self.label(minutes: $0))")
+        }
+        if !snoozeAllowed { actions = [] }
+        actions.append(UNNotificationAction(identifier: "off", title: "Turn off now", options: [.destructive]))
+        UNUserNotificationCenter.current().setNotificationCategories([
+            UNNotificationCategory(identifier: Self.category, actions: actions, intentIdentifiers: [])
+        ])
+    }
+
     private func refreshManaged() {
+        if registeredChoices != snoozeChoices { registerCategory() }
         let forced = Set(DefaultsKey.managed.filter(DefaultsKey.isForced))
         if forced != managedKeys { managedKeys = forced }
     }
@@ -255,9 +275,9 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
         let action = response.actionIdentifier
         await MainActor.run {
             switch action {
-            case "keep30": snooze(minutes: 30)
-            case "keep60": snooze(minutes: 60)
             case "off": setWiFi(false, reason: "You chose")
+            case _ where action.hasPrefix("keep:"):
+                if let minutes = Int(action.dropFirst(5)) { snooze(minutes: minutes) }
             default: break
             }
         }

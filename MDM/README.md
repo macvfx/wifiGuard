@@ -10,6 +10,7 @@ note in the menu and Settings).
 | `intervalMinutes` | Integer | 1 to 60 | 5 |
 | `lockoutGuard` | Boolean | never turn Wi-Fi off if it is the only connection | true |
 | `allowSnooze` | Boolean | allow "Keep Wi-Fi On For" | true |
+| `snoozeOptions` | String | up to three keep-on durations in minutes, for example `5, 15, 30` | `5, 15, 30` |
 
 Deploy as a Custom Settings payload (`com.apple.ManagedClient.preferences`) with the
 domain `com.wifiguard.app` and the keys above; the Jamf "Application & Custom Settings"
