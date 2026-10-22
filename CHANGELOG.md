@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0 (build 4)
+- Fix: Settings did not open from the menu. Cause: the SwiftUI Settings scene is opened by
+  sending an action through the responder chain, which a menu bar app without a main menu does
+  not have. Settings is now a regular window opened like Help.
+
 ## 0.3.0 (build 3)
 - Keep-on durations are configurable (up to three, in minutes; default 5, 15, 30) in Settings
   and via the `snoozeOptions` managed key. Menu and notification buttons follow them.

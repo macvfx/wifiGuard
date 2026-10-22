@@ -14,9 +14,10 @@ struct WiFiGuardApp: App {
                 paused: GuardMode(rawValue: modeRaw) == .paused))
         }
 
-        Settings {
+        Window("Wi-Fi Guard Settings", id: "settings") {
             SettingsView(model: model)
         }
+        .windowResizability(.contentSize)
 
         Window("Wi-Fi Guard Help", id: "help") {
             HelpView(model: model)
@@ -57,7 +58,7 @@ struct MenuContent: View {
             WindowFront.bring(titleContaining: "Help")
         }
         Button("Settings…") {
-            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+            openWindow(id: "settings")
             WindowFront.bring(titleContaining: "Settings")
         }
         Button("Quit Wi-Fi Guard") { NSApplication.shared.terminate(nil) }
