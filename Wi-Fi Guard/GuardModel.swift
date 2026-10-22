@@ -1,5 +1,6 @@
 import AppKit
 import Observation
+import os
 import ServiceManagement
 import UserNotifications
 
@@ -103,7 +104,25 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     // MARK: Actions
 
     func toggleWiFi() {
-        setWiFi(!wifi.isOn, reason: "Manual")
+        let turnOn = !wifi.isOn
+        if !turnOn, UserDefaults.standard.bool(forKey: DefaultsKey.lockoutGuard),
+           !paths.hasOtherPath, !confirmTurnOffOnlyConnection() {
+            record("Manual turn-off cancelled: Wi-Fi is the only connection")
+            return
+        }
+        setWiFi(turnOn, reason: "Manual")
+    }
+
+    private func confirmTurnOffOnlyConnection() -> Bool {
+        let alert = NSAlert()
+        alert.messageText = "Turn off your only connection?"
+        alert.informativeText = "Wi-Fi appears to be the only active network connection, "
+            + "including any VPN that runs over it. Turning it off will disconnect this Mac."
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Cancel")
+        alert.addButton(withTitle: "Turn Wi-Fi Off")
+        NSApp.activate(ignoringOtherApps: true)
+        return alert.runModal() == .alertSecondButtonReturn
     }
 
     func snooze(minutes: Int) {
@@ -196,6 +215,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     }
 
     private func record(_ text: String) {
+        Logger(subsystem: "com.wifiguard.app", category: "guard").notice("\(text, privacy: .public)")
         log.insert(LogEntry(text: text), at: 0)
         if log.count > 100 { log.removeLast(log.count - 100) }
     }

@@ -9,7 +9,7 @@ struct WiFiGuardApp: App {
         MenuBarExtra {
             MenuContent(model: model, modeRaw: $modeRaw)
         } label: {
-            Image(systemName: model.wifiOn ? "wifi" : "wifi.slash")
+            Image(nsImage: MenuBarIcon.image(wifiOn: model.wifiOn, allowed: model.snoozedUntil != nil))
         }
 
         Settings {
@@ -52,5 +52,20 @@ struct MenuContent: View {
         }
         if !model.wifiOn { return "Wi-Fi is off" }
         return GuardMode(rawValue: modeRaw) == .paused ? "Wi-Fi is on (guard paused)" : "Wi-Fi is on"
+    }
+}
+
+/// Coloured (non-template) menu bar icon: green = Wi-Fi on, orange = on and allowed for a while,
+/// red slashed = off.
+enum MenuBarIcon {
+    static func image(wifiOn: Bool, allowed: Bool) -> NSImage {
+        let name = wifiOn ? (allowed ? "wifi.circle.fill" : "wifi") : "wifi.slash"
+        let color: NSColor = wifiOn ? (allowed ? .systemOrange : .systemGreen) : .systemRed
+        let config = NSImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+            .applying(.init(paletteColors: [color]))
+        let image = NSImage(systemSymbolName: name, accessibilityDescription: "Wi-Fi Guard")?
+            .withSymbolConfiguration(config) ?? NSImage()
+        image.isTemplate = false
+        return image
     }
 }
