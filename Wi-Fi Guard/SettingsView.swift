@@ -12,11 +12,18 @@ struct SettingsView: View {
                 Picker("When Wi-Fi is on", selection: $modeRaw) {
                     ForEach(GuardMode.allCases) { Text($0.title).tag($0.rawValue) }
                 }
+                .disabled(model.isManaged(DefaultsKey.mode))
                 Stepper("Check every \(interval) min", value: $interval, in: 1...60)
+                    .disabled(model.isManaged(DefaultsKey.intervalMinutes))
                 Toggle("Never turn Wi-Fi off if it is the only connection", isOn: $lockoutGuard)
+                    .disabled(model.isManaged(DefaultsKey.lockoutGuard))
                 Toggle("Open at login", isOn: Binding(
                     get: { model.launchAtLogin },
                     set: { model.setLaunchAtLogin($0) }))
+            } footer: {
+                if model.isManagedAny {
+                    Label("Locked settings are managed by your organization.", systemImage: "lock.fill")
+                }
             }
             Section("Activity") {
                 if model.log.isEmpty {

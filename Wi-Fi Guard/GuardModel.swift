@@ -20,6 +20,14 @@ enum DefaultsKey {
     static let mode = "mode"
     static let intervalMinutes = "intervalMinutes"
     static let lockoutGuard = "lockoutGuard"
+    static let allowSnooze = "allowSnooze"
+
+    /// Keys an MDM configuration profile can force (domain com.wifiguard.app).
+    static let managed = [mode, intervalMinutes, lockoutGuard, allowSnooze]
+
+    static func isForced(_ key: String) -> Bool {
+        UserDefaults.standard.objectIsForced(forKey: key)
+    }
 }
 
 struct LogEntry: Identifiable {
@@ -35,6 +43,8 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     private(set) var snoozedUntil: Date?
     private(set) var log: [LogEntry] = []
     private(set) var launchAtLogin = false
+    /// Settings currently forced by a configuration profile; the UI locks these.
+    private(set) var managedKeys: Set<String> = []
 
     private let wifi = WiFiController()
     private let paths = OtherPathMonitor()
@@ -50,7 +60,9 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
             DefaultsKey.mode: GuardMode.ask.rawValue,
             DefaultsKey.intervalMinutes: 5,
             DefaultsKey.lockoutGuard: true,
+            DefaultsKey.allowSnooze: true,
         ])
+        refreshManaged()
         wifiOn = wifi.isOn
         launchAtLogin = SMAppService.mainApp.status == .enabled
         scheduleNextCheck()
@@ -83,6 +95,17 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     }
 
     // MARK: Settings
+
+    func isManaged(_ key: String) -> Bool { managedKeys.contains(key) }
+
+    var isManagedAny: Bool { !managedKeys.isEmpty }
+
+    var snoozeAllowed: Bool { UserDefaults.standard.bool(forKey: DefaultsKey.allowSnooze) }
+
+    private func refreshManaged() {
+        let forced = Set(DefaultsKey.managed.filter(DefaultsKey.isForced))
+        if forced != managedKeys { managedKeys = forced }
+    }
 
     var mode: GuardMode {
         GuardMode(rawValue: UserDefaults.standard.string(forKey: DefaultsKey.mode) ?? "") ?? .ask
@@ -126,6 +149,10 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     }
 
     func snooze(minutes: Int) {
+        guard snoozeAllowed else {
+            record("Keep-on request ignored: not allowed by policy")
+            return
+        }
         snoozedUntil = Date().addingTimeInterval(TimeInterval(minutes) * 60)
         record("Wi-Fi allowed for \(minutes) min")
         clearPrompt()
@@ -146,6 +173,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     }
 
     private func tick() {
+        refreshManaged()
         wifiOn = wifi.isOn
         if let until = snoozedUntil, until <= Date() {
             snoozedUntil = nil

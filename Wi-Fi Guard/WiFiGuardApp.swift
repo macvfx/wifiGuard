@@ -9,21 +9,30 @@ struct WiFiGuardApp: App {
         MenuBarExtra {
             MenuContent(model: model, modeRaw: $modeRaw)
         } label: {
-            Image(nsImage: MenuBarIcon.image(wifiOn: model.wifiOn, allowed: model.snoozedUntil != nil))
+            Image(nsImage: MenuBarIcon.image(
+                wifiOn: model.wifiOn, allowed: model.snoozedUntil != nil,
+                paused: GuardMode(rawValue: modeRaw) == .paused))
         }
 
         Settings {
             SettingsView(model: model)
         }
+
+        Window("Wi-Fi Guard Help", id: "help") {
+            HelpView(model: model)
+        }
+        .windowResizability(.contentSize)
     }
 }
 
 struct MenuContent: View {
     let model: GuardModel
     @Binding var modeRaw: String
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         Text(statusLine)
+        if model.isManagedAny { Text("Settings managed by your organization") }
         Divider()
         Button(model.wifiOn ? "Turn Wi-Fi Off" : "Turn Wi-Fi On") { model.toggleWiFi() }
         Menu("Keep Wi-Fi On For") {
@@ -35,12 +44,18 @@ struct MenuContent: View {
                 Button("End Now") { model.clearSnooze() }
             }
         }
+        .disabled(!model.snoozeAllowed)
         Divider()
         Picker("When Wi-Fi is on", selection: $modeRaw) {
             ForEach(GuardMode.allCases) { Text($0.title).tag($0.rawValue) }
         }
+        .disabled(model.isManaged(DefaultsKey.mode))
         Button("Check Now") { model.checkNow() }
         Divider()
+        Button("Help…") {
+            openWindow(id: "help")
+            NSApp.activate(ignoringOtherApps: true)
+        }
         SettingsLink { Text("Settings…") }
             .simultaneousGesture(TapGesture().onEnded { NSApp.activate(ignoringOtherApps: true) })
         Button("Quit Wi-Fi Guard") { NSApplication.shared.terminate(nil) }
@@ -56,11 +71,12 @@ struct MenuContent: View {
 }
 
 /// Coloured (non-template) menu bar icon: green = Wi-Fi on, orange = on and allowed for a while,
-/// red slashed = off.
+/// red slashed = off, light grey = guard paused.
 enum MenuBarIcon {
-    static func image(wifiOn: Bool, allowed: Bool) -> NSImage {
+    static func image(wifiOn: Bool, allowed: Bool, paused: Bool) -> NSImage {
         let name = wifiOn ? (allowed ? "wifi.circle.fill" : "wifi") : "wifi.slash"
-        let color: NSColor = wifiOn ? (allowed ? .systemOrange : .systemGreen) : .systemRed
+        let color: NSColor = paused ? .systemGray
+            : wifiOn ? (allowed ? .systemOrange : .systemGreen) : .systemRed
         let config = NSImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
             .applying(.init(paletteColors: [color]))
         let image = NSImage(systemSymbolName: name, accessibilityDescription: "Wi-Fi Guard")?

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>PayloadContent</key>
+			<dict>
+				<key>com.wifiguard.app</key>
+				<dict>
+					<key>Forced</key>
+					<array>
+						<dict>
+							<key>mcx_preference_settings</key>
+							<dict>
+								<key>allowSnooze</key>
+								<true/>
+								<key>intervalMinutes</key>
+								<integer>2</integer>
+								<key>lockoutGuard</key>
+								<true/>
+								<key>mode</key>
+								<string>ask</string>
+							</dict>
+						</dict>
+					</array>
+				</dict>
+			</dict>
+			<key>PayloadDisplayName</key>
+			<string>Wi-Fi Guard Test: Ask, 2 min settings</string>
+			<key>PayloadIdentifier</key>
+			<string>com.example.wifiguard.test-ask-2min.settings</string>
+			<key>PayloadType</key>
+			<string>com.apple.ManagedClient.preferences</string>
+			<key>PayloadUUID</key>
+			<string>5A29D2E0-419B-4F88-A6DF-5CF5BC76C0EF</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Test profile for Wi-Fi Guard. Locks the listed settings.</string>
+	<key>PayloadDisplayName</key>
+	<string>Wi-Fi Guard Test: Ask, 2 min</string>
+	<key>PayloadIdentifier</key>
+	<string>com.example.wifiguard.test-ask-2min</string>
+	<key>PayloadOrganization</key>
+	<string>Example Org</string>
+	<key>PayloadScope</key>
+	<string>System</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>88EC4958-A8A2-41F0-95C4-6391E2E194EF</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>

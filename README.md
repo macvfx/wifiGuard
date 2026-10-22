@@ -10,3 +10,8 @@ on from the menu bar or System Settings whenever you need it.
 - Developer ID distribution only (not sandboxed). Build with the shared mac-release-kit.
 
 Generate the project with `xcodegen generate` after editing `project.yml`.
+
+## Managed settings (MDM)
+
+Mode, interval, lockout guard and snooze can be forced by a configuration profile and are then
+locked in the app. See `MDM/README.md` for the keys and test profiles.
