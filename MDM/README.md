@@ -21,6 +21,8 @@ restricted.
 
 - `WiFiGuard-Test-Silent-2min.mobileconfig`: silent mode every 2 minutes, snooze disabled.
 - `WiFiGuard-Test-Ask-2min.mobileconfig`: ask mode every 2 minutes.
+- `WiFiGuard-Test-Ask-2min-KeepOn-1-3-5.mobileconfig`: as above, plus `snoozeOptions` `1, 3, 5`, so
+  the keep-on choices are fixed at 1, 3 and 5 minutes and that field is locked.
 
 Install: double-click the file, then System Settings > General > Device Management (or
 Privacy & Security > Profiles) > Install. Remove it from the same place.
