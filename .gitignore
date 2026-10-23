@@ -3,3 +3,8 @@ build/
 DerivedData/
 xcuserdata/
 *.xcodeproj/project.xcworkspace/xcuserdata/
+*.dmg
+*.pkg
+*.xcarchive
+.build/
+.claude/
