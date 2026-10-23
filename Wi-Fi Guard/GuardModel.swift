@@ -50,6 +50,8 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     private let wifi = WiFiController()
     private let paths = OtherPathMonitor()
     private var nextCheck = Date()
+    private var scheduledFrom = Date()
+    private var scheduledInterval: TimeInterval?
     private var timer: Timer?
     private var registeredChoices: [Int] = []
 
@@ -189,7 +191,9 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     // MARK: Scheduling
 
     private func scheduleNextCheck(after seconds: TimeInterval? = nil) {
-        nextCheck = Date().addingTimeInterval(seconds ?? intervalSeconds)
+        scheduledFrom = Date()
+        scheduledInterval = seconds == nil ? intervalSeconds : nil
+        nextCheck = scheduledFrom.addingTimeInterval(seconds ?? intervalSeconds)
     }
 
     private func tick() {
@@ -198,6 +202,11 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
         if let until = snoozedUntil, until <= Date() {
             snoozedUntil = nil
             record("Allowance ended")
+        }
+        // A new interval (setting or profile) applies to the pending check, not only the next one.
+        if let scheduled = scheduledInterval, scheduled != intervalSeconds {
+            scheduledInterval = intervalSeconds
+            nextCheck = scheduledFrom.addingTimeInterval(intervalSeconds)
         }
         guard Date() >= nextCheck else { return }
         scheduleNextCheck()
