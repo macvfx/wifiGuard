@@ -15,6 +15,7 @@
 		A1F7F14B85460B9F198A664F /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56079559BF9CA03F0E9770BD /* TimerView.swift */; };
 		AC1B7902E43DA23A944BD925 /* OtherPathMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B873F2CEE1BF9C19E027389 /* OtherPathMonitor.swift */; };
 		B54F1CD90235A824B980089E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94575BAD2FD70F1C2B5E6B6C /* Assets.xcassets */; };
+		D2B16FDCEF3C7F756C87EFC2 /* SiteFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731C2A6E0FA2AD48D57817C3 /* SiteFooter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		2EFC95486F7C1F183CA89837 /* WiFiController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiController.swift; sourceTree = "<group>"; };
 		4650534D2BB315329B0C282B /* Wi-Fi Guard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Wi-Fi Guard.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		56079559BF9CA03F0E9770BD /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
+		731C2A6E0FA2AD48D57817C3 /* SiteFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteFooter.swift; sourceTree = "<group>"; };
 		8B873F2CEE1BF9C19E027389 /* OtherPathMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherPathMonitor.swift; sourceTree = "<group>"; };
 		94575BAD2FD70F1C2B5E6B6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D4B77F194497C91CF38643FE /* WiFiGuardApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiGuardApp.swift; sourceTree = "<group>"; };
@@ -48,6 +50,7 @@
 				F5FCF3C553D69B273F87A5FD /* HelpView.swift */,
 				8B873F2CEE1BF9C19E027389 /* OtherPathMonitor.swift */,
 				DBFF54F39ECD165715A137A2 /* SettingsView.swift */,
+				731C2A6E0FA2AD48D57817C3 /* SiteFooter.swift */,
 				56079559BF9CA03F0E9770BD /* TimerView.swift */,
 				2EFC95486F7C1F183CA89837 /* WiFiController.swift */,
 				1B56A514A663ACBD86D57CAE /* WiFiGuard.entitlements */,
@@ -147,6 +150,7 @@
 				23C58854C366A9AE03BC83CD /* HelpView.swift in Sources */,
 				AC1B7902E43DA23A944BD925 /* OtherPathMonitor.swift in Sources */,
 				928AC4B9960A3D4F7D34C1BB /* SettingsView.swift in Sources */,
+				D2B16FDCEF3C7F756C87EFC2 /* SiteFooter.swift in Sources */,
 				A1F7F14B85460B9F198A664F /* TimerView.swift in Sources */,
 				0E52DDC3A515B7670E98F5BA /* WiFiController.swift in Sources */,
 				0746611196A504CDAA0C98CE /* WiFiGuardApp.swift in Sources */,
@@ -192,7 +196,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -280,7 +284,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;

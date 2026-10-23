@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.0 (build 8)
+- Help and Settings link to code.matx.ca.
+
 ## 0.4.0 (build 7)
 - Fix: the ask prompt could appear up to 30 seconds after the countdown reached zero. Cause: the
   check loop ran every 15 seconds and the notification asked for time-sensitive delivery without

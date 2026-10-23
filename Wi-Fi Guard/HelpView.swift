@@ -28,6 +28,8 @@ struct HelpView: View {
                 item("lock", "Managed settings",
                      "Some settings are set by your organization and are locked.")
             }
+            Divider()
+            SiteFooter()
         }
         .padding(20)
         .frame(width: 440)

@@ -9,6 +9,7 @@ struct SettingsView: View {
     @AppStorage(DefaultsKey.snoozeOptions) private var snoozeOptions = "5, 15, 30"
 
     var body: some View {
+        VStack(spacing: 0) {
         Form {
             Section {
                 Picker("When Wi-Fi is on", selection: $modeRaw) {
@@ -50,6 +51,8 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .frame(width: 460)
-        .padding(.bottom)
+        .padding(.bottom, 4)
+        SiteFooter().padding(.horizontal, 20).padding(.bottom, 12)
+        }
     }
 }
