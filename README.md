@@ -38,3 +38,7 @@ distributed outside the Mac App Store, signed with a Developer ID and notarized.
 
 Wi-Fi Guard makes no network requests, collects nothing and stores only its own preferences
 (and the end time of a keep-on allowance) in the app's preference domain `com.wifiguard.app`.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
