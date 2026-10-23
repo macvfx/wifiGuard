@@ -6,11 +6,17 @@ note in the menu and Settings).
 
 | Key | Type | Values | Default |
 | --- | --- | --- | --- |
-| `mode` | String | `ask`, `silent`, `paused` | `ask` |
+| `mode` | String | `ask`, `silent` (turn off automatically), `paused` | `ask` |
 | `intervalMinutes` | Integer | 1 to 60 | 5 |
 | `lockoutGuard` | Boolean | never turn Wi-Fi off if it is the only connection | true |
 | `allowSnooze` | Boolean | allow "Keep Wi-Fi On For" | true |
+| `launchAtLogin` | Boolean | open at login; the app registers or removes its login item to match | false |
 | `showInDock` | Boolean | show a Dock icon with a countdown badge | false |
+| `dockBadge` | Boolean | minutes left on the Dock icon (only with `showInDock`) | true |
+| `notifyOnAutoOff` | Boolean | notify when Wi-Fi is turned off automatically | true |
+| `notifyIntervalMinutes` | Integer | at most one such notification per this many minutes; 0 for every one | 60 |
+| `logRotation` | String | `weekly` or `monthly`: when the activity log is compressed | `monthly` |
+| `logKeep` | Integer | number of compressed logs kept (1 to 120) | 12 |
 | `snoozeOptions` | String | up to three keep-on durations in minutes, for example `5, 15, 30` | `5, 15, 30` |
 
 Deploy as a Custom Settings payload (`com.apple.ManagedClient.preferences`) with the
@@ -22,6 +28,9 @@ restricted.
 
 - `WiFiGuard-Test-Silent-2min.mobileconfig`: silent mode every 2 minutes, snooze disabled.
 - `WiFiGuard-Test-Ask-2min.mobileconfig`: ask mode every 2 minutes.
+- `WiFiGuard-Test-Auto-Notify-Login-Dock.mobileconfig`: automatic turn-off every 2 minutes with a
+  notification, plus open at login, the Dock icon with its badge and weekly log compression.
+  Note it forces open at login on; removing the profile does not remove the login item.
 - `WiFiGuard-Test-Ask-2min-KeepOn-1-3-5.mobileconfig`: as above, plus `snoozeOptions` `1, 3, 5`, so
   the keep-on choices are fixed at 1, 3 and 5 minutes and that field is locked.
 

@@ -10,8 +10,9 @@ being on causes traffic to take the wrong path, but where Wi-Fi is still needed 
 
 ## Features
 
-- **Ask or silent:** a notification asks "Wi-Fi is on, still needed?" with Keep-on buttons, or
-  Wi-Fi is turned off quietly. A paused mode does nothing.
+- **Ask or automatic:** a notification asks "Wi-Fi is on, still needed?" with Keep-on buttons, or
+  Wi-Fi is turned off automatically with a notification (rate limited, with a button to turn it
+  back on). Every event goes to a persistent activity log that is compressed weekly or monthly. A paused mode does nothing.
 - **Keep-on timers:** leave Wi-Fi alone for up to three durations you choose (default 5, 15 and
   30 minutes). The allowance survives relaunching or updating the app.
 - **Safety net:** if Wi-Fi is your only active connection it is left on, and turning it off by
@@ -19,7 +20,7 @@ being on causes traffic to take the wrong path, but where Wi-Fi is still needed 
 - **Timer window:** a live countdown to the next check and what it will do.
 - **Status at a glance:** a coloured menu bar icon (green on, orange allowed, red off, grey
   paused) and an optional Dock icon with a minutes-left badge.
-- **MDM support:** mode, interval, safety net, keep-on options and Dock icon can be forced by a
+- **MDM support:** mode, interval, safety net, keep-on options, notifications, open at login, the Dock icon and the log settings can be forced by a
   configuration profile and are then locked in the app. See [MDM/README.md](MDM/README.md).
 
 ## Requirements

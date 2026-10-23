@@ -18,6 +18,10 @@ struct HelpView: View {
             item("timer", "Timer",
                  "\"Show Timer…\" in the menu shows when the next check happens and what it will do. "
                  + "In Settings you can also show a Dock icon with the minutes left.")
+            item("bell", "Automatic mode",
+                 "\"Turn off automatically\" switches Wi-Fi off without asking and sends a notification "
+                 + "(at most one per hour by default, with a button to turn it back on). Everything is "
+                 + "also written to the activity log, which is compressed every week or month.")
             item("hand.raised", "Keep Wi-Fi on",
                  "Use \"Keep Wi-Fi On For\" in the menu, or a button on the notification, "
                  + "to leave it alone for 30 minutes, 1 hour or 4 hours.")

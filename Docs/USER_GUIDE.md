@@ -13,7 +13,10 @@
 
 - **Ask me:** at each check, if Wi-Fi is on, a notification asks whether you still need it.
   Choose a keep-on time or "Turn off now". Ignoring it leaves Wi-Fi on until the next check.
-- **Turn off silently:** at each check, if Wi-Fi is on, it is turned off and the event is logged.
+- **Turn off automatically:** at each check, if Wi-Fi is on, it is turned off without asking.
+  A notification says so, with a button to turn Wi-Fi back on. By default at most one
+  notification is sent per hour; anything in between is only written to the activity log.
+  Both are in Settings.
 - **Paused:** nothing happens.
 
 Change the mode from the menu or from Settings.
@@ -50,6 +53,12 @@ and an activity log of what the app decided.
 If your organization deploys a configuration profile, the settings it controls are greyed out
 and a note says so. Turning Wi-Fi on or off by hand is never restricted. See
 [MDM/README.md](../MDM/README.md).
+
+## Activity log
+
+Every decision is written to a log in `~/Library/Application Support/Wi-Fi Guard/Logs/`.
+Once a week or month (your choice in Settings) the log is compressed to a `.log.gz` file and
+a new one starts. The newest 12 compressed logs are kept by default. "Show Log Folder" opens it.
 
 ## Troubleshooting
 

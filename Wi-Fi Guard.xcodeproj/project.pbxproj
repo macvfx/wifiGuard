@@ -16,6 +16,7 @@
 		AC1B7902E43DA23A944BD925 /* OtherPathMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B873F2CEE1BF9C19E027389 /* OtherPathMonitor.swift */; };
 		B54F1CD90235A824B980089E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94575BAD2FD70F1C2B5E6B6C /* Assets.xcassets */; };
 		D2B16FDCEF3C7F756C87EFC2 /* SiteFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731C2A6E0FA2AD48D57817C3 /* SiteFooter.swift */; };
+		F2F2CEEBF316028A9F67D462 /* ActivityLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65302B31C4359330B5BD8CA2 /* ActivityLog.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		2EFC95486F7C1F183CA89837 /* WiFiController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiController.swift; sourceTree = "<group>"; };
 		4650534D2BB315329B0C282B /* Wi-Fi Guard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Wi-Fi Guard.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		56079559BF9CA03F0E9770BD /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
+		65302B31C4359330B5BD8CA2 /* ActivityLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLog.swift; sourceTree = "<group>"; };
 		731C2A6E0FA2AD48D57817C3 /* SiteFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteFooter.swift; sourceTree = "<group>"; };
 		8B873F2CEE1BF9C19E027389 /* OtherPathMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherPathMonitor.swift; sourceTree = "<group>"; };
 		94575BAD2FD70F1C2B5E6B6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -45,6 +47,7 @@
 		3A3AD7342D444CD415F5E9F7 /* Wi-Fi Guard */ = {
 			isa = PBXGroup;
 			children = (
+				65302B31C4359330B5BD8CA2 /* ActivityLog.swift */,
 				94575BAD2FD70F1C2B5E6B6C /* Assets.xcassets */,
 				07E783769A2B9E14CAEE94C8 /* GuardModel.swift */,
 				F5FCF3C553D69B273F87A5FD /* HelpView.swift */,
@@ -146,6 +149,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2F2CEEBF316028A9F67D462 /* ActivityLog.swift in Sources */,
 				73668EFA36A8CE83D325F789 /* GuardModel.swift in Sources */,
 				23C58854C366A9AE03BC83CD /* HelpView.swift in Sources */,
 				AC1B7902E43DA23A944BD925 /* OtherPathMonitor.swift in Sources */,
@@ -196,7 +200,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -216,7 +220,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.4.0;
+				MARKETING_VERSION = 0.5.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -284,7 +288,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -298,7 +302,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.4.0;
+				MARKETING_VERSION = 0.5.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

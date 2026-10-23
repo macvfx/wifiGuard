@@ -10,7 +10,7 @@ enum GuardMode: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .ask: "Ask me"
-        case .silent: "Turn off silently"
+        case .silent: "Turn off automatically"
         case .paused: "Paused"
         }
     }
@@ -23,9 +23,18 @@ enum DefaultsKey {
     static let allowSnooze = "allowSnooze"
     static let snoozeOptions = "snoozeOptions"
     static let showInDock = "showInDock"
+    static let dockBadge = "dockBadge"
+    static let launchAtLogin = "launchAtLogin"
+    static let notifyOnAutoOff = "notifyOnAutoOff"
+    static let notifyIntervalMinutes = "notifyIntervalMinutes"
+    static let logRotation = "logRotation"
+    static let logKeep = "logKeep"
+    static let lastAutoOffNotice = "lastAutoOffNotice"
 
     /// Keys an MDM configuration profile can force (domain com.wifiguard.app).
-    static let managed = [mode, intervalMinutes, lockoutGuard, allowSnooze, snoozeOptions, showInDock]
+    static let managed = [mode, intervalMinutes, lockoutGuard, allowSnooze, snoozeOptions,
+                          showInDock, dockBadge, launchAtLogin, notifyOnAutoOff,
+                          notifyIntervalMinutes, logRotation, logKeep]
 
     static func isForced(_ key: String) -> Bool {
         UserDefaults.standard.objectIsForced(forKey: key)
@@ -34,8 +43,13 @@ enum DefaultsKey {
 
 struct LogEntry: Identifiable {
     let id = UUID()
-    let date = Date()
+    let date: Date
     let text: String
+
+    init(date: Date = Date(), text: String) {
+        self.date = date
+        self.text = text
+    }
 }
 
 @MainActor
@@ -57,9 +71,13 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     private var scheduledInterval: TimeInterval?
     private var timer: Timer?
     private var registeredChoices: [Int] = []
+    private let activityLog = ActivityLog()
+    private var tickCount = 0
+    private var lastLoginEnforce = Date.distantPast
 
     private static let snoozeKey = "snoozedUntil"
     private static let category = "WIFI_ASK"
+    private static let offCategory = "WIFI_OFF"
     private static let requestID = "wifi-on"
 
     override init() {
@@ -71,7 +89,15 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
             DefaultsKey.allowSnooze: true,
             DefaultsKey.snoozeOptions: "5, 15, 30",
             DefaultsKey.showInDock: false,
+            DefaultsKey.dockBadge: true,
+            DefaultsKey.launchAtLogin: false,
+            DefaultsKey.notifyOnAutoOff: true,
+            DefaultsKey.notifyIntervalMinutes: 60,
+            DefaultsKey.logRotation: "monthly",
+            DefaultsKey.logKeep: 12,
         ])
+        rotateLog()
+        log = activityLog.recent(limit: 100)
         refreshManaged()
         // An allowance survives a relaunch or an update.
         if let saved = UserDefaults.standard.object(forKey: Self.snoozeKey) as? Date, saved > Date() {
@@ -123,7 +149,8 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     }
 
     private func updateDockBadge() {
-        guard showInDock, wifiOn, mode != .paused, snoozedUntil == nil else {
+        guard showInDock, UserDefaults.standard.bool(forKey: DefaultsKey.dockBadge),
+              wifiOn, mode != .paused, snoozedUntil == nil else {
             NSApp.dockTile.badgeLabel = nil
             return
         }
@@ -157,7 +184,11 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
         if !snoozeAllowed { actions = [] }
         actions.append(UNNotificationAction(identifier: "off", title: "Turn off now", options: [.destructive]))
         UNUserNotificationCenter.current().setNotificationCategories([
-            UNNotificationCategory(identifier: Self.category, actions: actions, intentIdentifiers: [])
+            UNNotificationCategory(identifier: Self.category, actions: actions, intentIdentifiers: []),
+            UNNotificationCategory(
+                identifier: Self.offCategory,
+                actions: [UNNotificationAction(identifier: "turn-on", title: "Turn Wi-Fi back on")],
+                intentIdentifiers: []),
         ])
     }
 
@@ -182,6 +213,30 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
             record("Launch at login failed: \(error.localizedDescription)")
         }
         launchAtLogin = SMAppService.mainApp.status == .enabled
+    }
+
+    /// A profile can force "open at login"; make the system login item match.
+    private func enforceLaunchAtLogin() {
+        let enabled = SMAppService.mainApp.status == .enabled
+        if launchAtLogin != enabled { launchAtLogin = enabled }
+        guard isManaged(DefaultsKey.launchAtLogin) else { return }
+        let wanted = UserDefaults.standard.bool(forKey: DefaultsKey.launchAtLogin)
+        if enabled != wanted, Date().timeIntervalSince(lastLoginEnforce) > 60 {
+            lastLoginEnforce = Date()
+            setLaunchAtLogin(wanted)
+        }
+    }
+
+    func rotateLog() {
+        let defaults = UserDefaults.standard
+        if activityLog.rotateIfNeeded(rotation: defaults.string(forKey: DefaultsKey.logRotation) ?? "monthly",
+                                      keep: defaults.integer(forKey: DefaultsKey.logKeep)) {
+            record("Previous activity log compressed")
+        }
+    }
+
+    func showLogFolder() {
+        NSWorkspace.shared.open(activityLog.folderURL)
     }
 
     // MARK: Actions
@@ -236,6 +291,12 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
 
     private func tick() {
         refreshManaged()
+        tickCount += 1
+        if tickCount % 15 == 0 {
+            enforceLaunchAtLogin()
+            if (NSApp.activationPolicy() == .regular) != showInDock { applyDockPreference() }
+        }
+        if tickCount % 3600 == 0 { rotateLog() }
         wifiOn = wifi.isOn
         if let until = snoozedUntil, until <= Date() {
             snoozedUntil = nil
@@ -289,6 +350,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
             wifiOn = on
             record("\(reason): Wi-Fi turned \(on ? "on" : "off")")
             if on { scheduleNextCheck() } else { clearPrompt() }
+            if !on, reason == "Auto-off" { notifyAutoOff() }
         } catch {
             record("Could not turn Wi-Fi \(on ? "on" : "off"): \(error.localizedDescription)")
         }
@@ -304,6 +366,24 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
         record("Asked whether Wi-Fi is still needed")
     }
 
+    /// Tell the user Wi-Fi was turned off, at most once per notification interval; anything
+    /// inside that window is only in the log.
+    private func notifyAutoOff() {
+        let defaults = UserDefaults.standard
+        guard defaults.bool(forKey: DefaultsKey.notifyOnAutoOff) else { return }
+        let window = TimeInterval(max(0, defaults.integer(forKey: DefaultsKey.notifyIntervalMinutes))) * 60
+        if let last = defaults.object(forKey: DefaultsKey.lastAutoOffNotice) as? Date,
+           Date().timeIntervalSince(last) < window { return }
+        defaults.set(Date(), forKey: DefaultsKey.lastAutoOffNotice)
+
+        let content = UNMutableNotificationContent()
+        content.title = "Wi-Fi turned off"
+        content.body = "Wi-Fi Guard turned Wi-Fi off. Turn it back on from the menu bar whenever you need it."
+        content.categoryIdentifier = Self.offCategory
+        UNUserNotificationCenter.current().add(
+            UNNotificationRequest(identifier: "wifi-off", content: content, trigger: nil))
+    }
+
     private func clearPrompt() {
         let center = UNUserNotificationCenter.current()
         center.removeDeliveredNotifications(withIdentifiers: [Self.requestID])
@@ -312,7 +392,9 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
 
     private func record(_ text: String) {
         Logger(subsystem: "com.wifiguard.app", category: "guard").notice("\(text, privacy: .public)")
-        log.insert(LogEntry(text: text), at: 0)
+        let entry = LogEntry(text: text)
+        activityLog.append(date: entry.date, text: text)
+        log.insert(entry, at: 0)
         if log.count > 100 { log.removeLast(log.count - 100) }
     }
 
@@ -324,6 +406,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
         await MainActor.run {
             switch action {
             case "off": setWiFi(false, reason: "You chose")
+            case "turn-on": setWiFi(true, reason: "You chose")
             case _ where action.hasPrefix("keep:"):
                 if let minutes = Int(action.dropFirst(5)) { snooze(minutes: minutes) }
             default: break

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 (build 9)
+- Automatic mode ("Turn off automatically") sends a notification when Wi-Fi is turned off, with a
+  Turn Wi-Fi back on button. At most one per hour by default; the rest is only logged.
+- Persistent activity log, compressed with gzip every week or month, newest 12 kept.
+- Profile keys for open at login (`launchAtLogin`), Dock badge, notifications and log settings;
+  a new test profile exercises them.
+- Settings reorganised into Checking, Notifications, Appearance and Activity log.
+
 ## 0.4.0 (build 8)
 - Help and Settings link to code.matx.ca.
 
