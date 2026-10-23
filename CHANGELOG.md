@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 (build 7)
+- Fix: the ask prompt could appear up to 30 seconds after the countdown reached zero. Cause: the
+  check loop ran every 15 seconds and the notification asked for time-sensitive delivery without
+  the entitlement. The loop now runs every second.
+- A "keep on" allowance is saved, so relaunching or updating the app no longer drops it, and the
+  check runs as soon as the allowance ends instead of up to a full interval later.
+
 ## 0.4.0 (build 6)
 - App icon: green Wi-Fi with a red power badge.
 - Timer window ("Show Timer…" in the menu): countdown to the next check and what it will do.

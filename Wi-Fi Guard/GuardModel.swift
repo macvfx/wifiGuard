@@ -42,7 +42,9 @@ struct LogEntry: Identifiable {
 @Observable
 final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     private(set) var wifiOn = false
-    private(set) var snoozedUntil: Date?
+    private(set) var snoozedUntil: Date? {
+        didSet { UserDefaults.standard.set(snoozedUntil, forKey: Self.snoozeKey) }
+    }
     private(set) var log: [LogEntry] = []
     private(set) var launchAtLogin = false
     /// Settings currently forced by a configuration profile; the UI locks these.
@@ -56,6 +58,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     private var timer: Timer?
     private var registeredChoices: [Int] = []
 
+    private static let snoozeKey = "snoozedUntil"
     private static let category = "WIFI_ASK"
     private static let requestID = "wifi-on"
 
@@ -70,6 +73,10 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
             DefaultsKey.showInDock: false,
         ])
         refreshManaged()
+        // An allowance survives a relaunch or an update.
+        if let saved = UserDefaults.standard.object(forKey: Self.snoozeKey) as? Date, saved > Date() {
+            snoozedUntil = saved
+        }
         wifiOn = wifi.isOn
         launchAtLogin = SMAppService.mainApp.status == .enabled
         scheduleNextCheck()
@@ -88,7 +95,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
         registerCategory()
         center.requestAuthorization(options: [.alert]) { _, _ in }
 
-        timer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
         }
     }
@@ -232,6 +239,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
         wifiOn = wifi.isOn
         if let until = snoozedUntil, until <= Date() {
             snoozedUntil = nil
+            nextCheck = Date()  // check as soon as the allowance ends, not a full interval later
             record("Allowance ended")
         }
         // A new interval (setting or profile) applies to the pending check, not only the next one.
@@ -291,7 +299,6 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
         content.title = "Wi-Fi is on"
         content.body = "Do you still need it? It can interfere with other network paths."
         content.categoryIdentifier = Self.category
-        content.interruptionLevel = .timeSensitive
         let request = UNNotificationRequest(identifier: Self.requestID, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request)
         record("Asked whether Wi-Fi is still needed")
