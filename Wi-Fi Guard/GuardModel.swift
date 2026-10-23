@@ -22,9 +22,10 @@ enum DefaultsKey {
     static let lockoutGuard = "lockoutGuard"
     static let allowSnooze = "allowSnooze"
     static let snoozeOptions = "snoozeOptions"
+    static let showInDock = "showInDock"
 
     /// Keys an MDM configuration profile can force (domain com.wifiguard.app).
-    static let managed = [mode, intervalMinutes, lockoutGuard, allowSnooze, snoozeOptions]
+    static let managed = [mode, intervalMinutes, lockoutGuard, allowSnooze, snoozeOptions, showInDock]
 
     static func isForced(_ key: String) -> Bool {
         UserDefaults.standard.objectIsForced(forKey: key)
@@ -49,7 +50,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
 
     private let wifi = WiFiController()
     private let paths = OtherPathMonitor()
-    private var nextCheck = Date()
+    private(set) var nextCheck = Date()
     private var scheduledFrom = Date()
     private var scheduledInterval: TimeInterval?
     private var timer: Timer?
@@ -66,6 +67,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
             DefaultsKey.lockoutGuard: true,
             DefaultsKey.allowSnooze: true,
             DefaultsKey.snoozeOptions: "5, 15, 30",
+            DefaultsKey.showInDock: false,
         ])
         refreshManaged()
         wifiOn = wifi.isOn
@@ -92,6 +94,35 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
     }
 
     // MARK: Settings
+
+    /// What the next check will do, for the timer window.
+    var nextActionText: String {
+        if mode == .paused { return "Guard is paused" }
+        if let until = snoozedUntil {
+            return "Wi-Fi allowed until \(until.formatted(date: .omitted, time: .shortened))"
+        }
+        if !wifiOn { return "Wi-Fi is off. Nothing to do." }
+        if UserDefaults.standard.bool(forKey: DefaultsKey.lockoutGuard), !paths.hasOtherPath {
+            return "Wi-Fi is your only connection, so it will be left on"
+        }
+        return mode == .silent ? "Wi-Fi will be turned off" : "You will be asked about Wi-Fi"
+    }
+
+    var showInDock: Bool { UserDefaults.standard.bool(forKey: DefaultsKey.showInDock) }
+
+    func applyDockPreference() {
+        NSApp.setActivationPolicy(showInDock ? .regular : .accessory)
+        updateDockBadge()
+    }
+
+    private func updateDockBadge() {
+        guard showInDock, wifiOn, mode != .paused, snoozedUntil == nil else {
+            NSApp.dockTile.badgeLabel = nil
+            return
+        }
+        let minutes = max(0, Int((nextCheck.timeIntervalSinceNow / 60).rounded(.up)))
+        NSApp.dockTile.badgeLabel = "\(minutes)m"
+    }
 
     func isManaged(_ key: String) -> Bool { managedKeys.contains(key) }
 
@@ -208,6 +239,7 @@ final class GuardModel: NSObject, UNUserNotificationCenterDelegate {
             scheduledInterval = intervalSeconds
             nextCheck = scheduledFrom.addingTimeInterval(intervalSeconds)
         }
+        updateDockBadge()
         guard Date() >= nextCheck else { return }
         scheduleNextCheck()
         evaluate()

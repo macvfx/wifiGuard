@@ -15,6 +15,9 @@ struct HelpView: View {
             item("clock", "Checks",
                  "Every few minutes it checks whether Wi-Fi is on. Depending on the mode it asks "
                  + "if you still need it, or turns it off quietly.")
+            item("timer", "Timer",
+                 "\"Show Timer…\" in the menu shows when the next check happens and what it will do. "
+                 + "In Settings you can also show a Dock icon with the minutes left.")
             item("hand.raised", "Keep Wi-Fi on",
                  "Use \"Keep Wi-Fi On For\" in the menu, or a button on the notification, "
                  + "to leave it alone for 30 minutes, 1 hour or 4 hours.")

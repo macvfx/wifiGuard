@@ -12,7 +12,9 @@
 		23C58854C366A9AE03BC83CD /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FCF3C553D69B273F87A5FD /* HelpView.swift */; };
 		73668EFA36A8CE83D325F789 /* GuardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E783769A2B9E14CAEE94C8 /* GuardModel.swift */; };
 		928AC4B9960A3D4F7D34C1BB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBFF54F39ECD165715A137A2 /* SettingsView.swift */; };
+		A1F7F14B85460B9F198A664F /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56079559BF9CA03F0E9770BD /* TimerView.swift */; };
 		AC1B7902E43DA23A944BD925 /* OtherPathMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B873F2CEE1BF9C19E027389 /* OtherPathMonitor.swift */; };
+		B54F1CD90235A824B980089E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94575BAD2FD70F1C2B5E6B6C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,7 +22,9 @@
 		1B56A514A663ACBD86D57CAE /* WiFiGuard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WiFiGuard.entitlements; sourceTree = "<group>"; };
 		2EFC95486F7C1F183CA89837 /* WiFiController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiController.swift; sourceTree = "<group>"; };
 		4650534D2BB315329B0C282B /* Wi-Fi Guard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Wi-Fi Guard.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		56079559BF9CA03F0E9770BD /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		8B873F2CEE1BF9C19E027389 /* OtherPathMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherPathMonitor.swift; sourceTree = "<group>"; };
+		94575BAD2FD70F1C2B5E6B6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D4B77F194497C91CF38643FE /* WiFiGuardApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiGuardApp.swift; sourceTree = "<group>"; };
 		DBFF54F39ECD165715A137A2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F5FCF3C553D69B273F87A5FD /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
@@ -38,10 +42,12 @@
 		3A3AD7342D444CD415F5E9F7 /* Wi-Fi Guard */ = {
 			isa = PBXGroup;
 			children = (
+				94575BAD2FD70F1C2B5E6B6C /* Assets.xcassets */,
 				07E783769A2B9E14CAEE94C8 /* GuardModel.swift */,
 				F5FCF3C553D69B273F87A5FD /* HelpView.swift */,
 				8B873F2CEE1BF9C19E027389 /* OtherPathMonitor.swift */,
 				DBFF54F39ECD165715A137A2 /* SettingsView.swift */,
+				56079559BF9CA03F0E9770BD /* TimerView.swift */,
 				2EFC95486F7C1F183CA89837 /* WiFiController.swift */,
 				1B56A514A663ACBD86D57CAE /* WiFiGuard.entitlements */,
 				D4B77F194497C91CF38643FE /* WiFiGuardApp.swift */,
@@ -65,6 +71,7 @@
 			buildConfigurationList = 26BB97BB4F2EAFA709BB5AB8 /* Build configuration list for PBXNativeTarget "Wi-Fi Guard" */;
 			buildPhases = (
 				DCEAD6AB4CAF7AF649B08F7B /* Sources */,
+				2AA3E3859DF4649B6D7A79E8 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -111,6 +118,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		2AA3E3859DF4649B6D7A79E8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B54F1CD90235A824B980089E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DCEAD6AB4CAF7AF649B08F7B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -120,6 +138,7 @@
 				23C58854C366A9AE03BC83CD /* HelpView.swift in Sources */,
 				AC1B7902E43DA23A944BD925 /* OtherPathMonitor.swift in Sources */,
 				928AC4B9960A3D4F7D34C1BB /* SettingsView.swift in Sources */,
+				A1F7F14B85460B9F198A664F /* TimerView.swift in Sources */,
 				0E52DDC3A515B7670E98F5BA /* WiFiController.swift in Sources */,
 				0746611196A504CDAA0C98CE /* WiFiGuardApp.swift in Sources */,
 			);
@@ -163,7 +182,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = YOURTEAMID;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -184,7 +203,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.0;
+				MARKETING_VERSION = 0.4.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -251,7 +270,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YOURTEAMID;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -266,7 +285,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.0;
+				MARKETING_VERSION = 0.4.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

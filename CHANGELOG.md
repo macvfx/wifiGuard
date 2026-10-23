@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 (build 6)
+- App icon: green Wi-Fi with a red power badge.
+- Timer window ("Show Timer…" in the menu): countdown to the next check and what it will do.
+- Optional Dock icon with a minutes-left badge (Settings, or `showInDock` via profile). Clicking
+  the Dock icon opens the timer window.
+
 ## 0.3.0 (build 5)
 - Fix: a changed check interval (Settings or a profile) only took effect after the check already
   scheduled under the old interval, so the first check after installing a 2 minute profile could

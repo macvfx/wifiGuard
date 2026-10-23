@@ -7,8 +7,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.0"
-    MARKETING_VERSION: "0.3.0"
-    CURRENT_PROJECT_VERSION: "5"
+    MARKETING_VERSION: "0.4.0"
+    CURRENT_PROJECT_VERSION: "6"
     ENABLE_HARDENED_RUNTIME: YES
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_TEAM: YOURTEAMID
@@ -24,6 +24,7 @@ targets:
         PRODUCT_NAME: Wi-Fi Guard
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_LSUIElement: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
         INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026"
         CODE_SIGN_ENTITLEMENTS: Wi-Fi Guard/WiFiGuard.entitlements

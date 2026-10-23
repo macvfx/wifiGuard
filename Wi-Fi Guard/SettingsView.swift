@@ -5,6 +5,7 @@ struct SettingsView: View {
     @AppStorage(DefaultsKey.mode) private var modeRaw = GuardMode.ask.rawValue
     @AppStorage(DefaultsKey.intervalMinutes) private var interval = 5
     @AppStorage(DefaultsKey.lockoutGuard) private var lockoutGuard = true
+    @AppStorage(DefaultsKey.showInDock) private var showInDock = false
     @AppStorage(DefaultsKey.snoozeOptions) private var snoozeOptions = "5, 15, 30"
 
     var body: some View {
@@ -21,6 +22,9 @@ struct SettingsView: View {
                               || model.isManaged(DefaultsKey.allowSnooze))
                 Toggle("Never turn Wi-Fi off if it is the only connection", isOn: $lockoutGuard)
                     .disabled(model.isManaged(DefaultsKey.lockoutGuard))
+                Toggle("Show in Dock with a countdown badge", isOn: $showInDock)
+                    .disabled(model.isManaged(DefaultsKey.showInDock))
+                    .onChange(of: showInDock) { model.applyDockPreference() }
                 Toggle("Open at login", isOn: Binding(
                     get: { model.launchAtLogin },
                     set: { model.setLaunchAtLogin($0) }))

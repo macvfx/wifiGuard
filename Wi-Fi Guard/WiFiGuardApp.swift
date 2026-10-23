@@ -1,7 +1,26 @@
 import SwiftUI
 
+extension Notification.Name {
+    static let showTimerWindow = Notification.Name("WiFiGuard.showTimerWindow")
+}
+
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        let showInDock = UserDefaults.standard.bool(forKey: DefaultsKey.showInDock)
+        NSApp.setActivationPolicy(showInDock ? .regular : .accessory)
+    }
+
+    /// Clicking the Dock icon (or reopening the app) shows the timer window.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        NotificationCenter.default.post(name: .showTimerWindow, object: nil)
+        return false
+    }
+}
+
 @main
 struct WiFiGuardApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
+    @Environment(\.openWindow) private var openWindow
     @State private var model = GuardModel()
     @AppStorage(DefaultsKey.mode) private var modeRaw = GuardMode.ask.rawValue
 
@@ -12,7 +31,16 @@ struct WiFiGuardApp: App {
             Image(nsImage: MenuBarIcon.image(
                 wifiOn: model.wifiOn, allowed: model.snoozedUntil != nil,
                 paused: GuardMode(rawValue: modeRaw) == .paused))
+                .onReceive(NotificationCenter.default.publisher(for: .showTimerWindow)) { _ in
+                    openWindow(id: "timer")
+                    WindowFront.bring(titleContaining: "Timer")
+                }
         }
+
+        Window("Wi-Fi Guard Timer", id: "timer") {
+            TimerView(model: model)
+        }
+        .windowResizability(.contentSize)
 
         Window("Wi-Fi Guard Settings", id: "settings") {
             SettingsView(model: model)
@@ -52,6 +80,10 @@ struct MenuContent: View {
         }
         .disabled(model.isManaged(DefaultsKey.mode))
         Button("Check Now") { model.checkNow() }
+        Button("Show Timer…") {
+            openWindow(id: "timer")
+            WindowFront.bring(titleContaining: "Timer")
+        }
         Divider()
         Button("Help…") {
             openWindow(id: "help")
@@ -69,7 +101,8 @@ struct MenuContent: View {
             return "Wi-Fi allowed until \(until.formatted(date: .omitted, time: .shortened))"
         }
         if !model.wifiOn { return "Wi-Fi is off" }
-        return GuardMode(rawValue: modeRaw) == .paused ? "Wi-Fi is on (guard paused)" : "Wi-Fi is on"
+        if GuardMode(rawValue: modeRaw) == .paused { return "Wi-Fi is on (guard paused)" }
+        return "Wi-Fi is on. Next check \(model.nextCheck.formatted(date: .omitted, time: .shortened))"
     }
 }
 
