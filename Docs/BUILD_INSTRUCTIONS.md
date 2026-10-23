@@ -13,7 +13,17 @@ editing the `.xcodeproj` by hand. The version and build number are `MARKETING_VE
 `CURRENT_PROJECT_VERSION` there.
 
 The app is not sandboxed (see `Wi-Fi Guard/WiFiGuard.entitlements`) and runs as a menu bar app
-(`LSUIElement`). Set your own development team in Xcode to run a local build.
+(`LSUIElement`).
+
+## Signing for a local build
+
+No team ID is committed. To sign local builds with your own team, copy the example and fill it in:
+
+```bash
+cp Config/Signing.local.example.xcconfig Config/Signing.local.xcconfig
+```
+
+`Config/Signing.local.xcconfig` is gitignored. Alternatively set the team in Xcode.
 
 ## Command line build
 

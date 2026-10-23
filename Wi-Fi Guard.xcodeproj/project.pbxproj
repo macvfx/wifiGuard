@@ -28,6 +28,7 @@
 		D4B77F194497C91CF38643FE /* WiFiGuardApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiGuardApp.swift; sourceTree = "<group>"; };
 		DBFF54F39ECD165715A137A2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F5FCF3C553D69B273F87A5FD /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
+		F904AFACBF595F6D78D62A8A /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -58,9 +59,18 @@
 		D6F08FAA6C54D566637DFC1A = {
 			isa = PBXGroup;
 			children = (
+				F7A3347F377CF021B185A559 /* Config */,
 				3A3AD7342D444CD415F5E9F7 /* Wi-Fi Guard */,
 				369DD3096D60B331088EBEF7 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		F7A3347F377CF021B185A559 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				F904AFACBF595F6D78D62A8A /* Signing.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -94,7 +104,6 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					A8E533C1C1A5F290740AED87 = {
-						DevelopmentTeam = YOURTEAMID;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -149,6 +158,7 @@
 /* Begin XCBuildConfiguration section */
 		872FB58037F064DF7C3EEA0C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F904AFACBF595F6D78D62A8A /* Signing.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -184,7 +194,6 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 7;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = YOURTEAMID;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -237,6 +246,7 @@
 		};
 		D14653996A73E066B4A52A61 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F904AFACBF595F6D78D62A8A /* Signing.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -272,7 +282,6 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 7;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = YOURTEAMID;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

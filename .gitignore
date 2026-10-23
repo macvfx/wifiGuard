@@ -8,3 +8,8 @@ xcuserdata/
 *.xcarchive
 .build/
 .claude/
+
+# Local signing settings and credentials (never commit real identities)
+Config/Signing.local.xcconfig
+signing.env
+*.env

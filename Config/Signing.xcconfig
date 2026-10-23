@@ -1,0 +1,3 @@
+// Optional local signing settings. Create Config/Signing.local.xcconfig from the example;
+// it is gitignored. Release builds supply the team through the release tooling instead.
+#include? "Signing.local.xcconfig"
